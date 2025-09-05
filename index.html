@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>PixelSurface V1</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pixel Surface</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #fafafa;
+    }
+    body {
+      font-family: monospace, sans-serif;
+      color: #111;
+      min-height: 100vh;
+      margin: 0;
+      padding: 1.5em;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    .container {
+      max-width: 900px;
+      width: 100%;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 1em;
+    }
+    h1 {
+      font-family: 'Press Start 2P', monospace, cursive;
+      font-size: 22px;
+      margin: 20px 0 15px 0;
+      word-break: break-word;
+    }
+    .upload-box {
+      border: 2px dashed #000;
+      padding: 30px;
+      margin-bottom: 20px;
+      background: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.1s;
+      width: 100%;
+      max-width: 350px;
+      box-sizing: border-box;
+    }
+    .upload-box:hover,
+    .upload-box:focus-within {
+      background: #f1f1f1;
+    }
+    input[type="file"] { display: none; }
+
+    .toolbar {
+      width: 100%;
+      max-width: 370px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5em;
+      align-items: center;
+    }
+    select, button {
+      font-family: monospace;
+      font-size: 14px;
+      background: #eaeaea;
+      border: 2px solid #000;
+      padding: 8px 14px;
+      margin: 5px 2px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 #000;
+      transition: transform 0.1s;
+      border-radius: 2px;
+    }
+    button:active, select:active {
+      transform: translate(2px, 2px);
+      box-shadow: none;
+    }
+    label {
+      margin: 8px auto;
+      display: block;
+      font-weight: bold;
+      font-size: 14px;
+      text-align: left;
+      max-width: 370px;
+      width: 100%;
+    }
+    input[type=range] {
+      width: 62%;
+      margin-left: 8px;
+      accent-color: #000;
+      vertical-align: middle;
+    }
+    #preview {
+      margin-top: 20px;
+      border: 2px solid #000;
+      background: #fff;
+      display: inline-block;
+      max-width: 100%;
+      padding: 6px;
+      box-sizing: border-box;
+      border-radius: 2px;
+    }
+    canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      background: #fafafa;
+      margin: auto;
+      border-radius: 2px;
+    }
+    .faq {
+      margin-top: 35px;
+      padding: 18px;
+      border: 2px solid #000;
+      border-radius: 3px;
+      background: #fff;
+      text-align: left;
+      max-width: 500px;
+      font-size: 14px;
+      line-height: 1.7;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .faq h2 {
+      font-family: 'Press Start 2P', monospace, cursive;
+      font-size: 16px;
+      margin: 0 0 12px 0;
+    }
+    .faq p {
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+
+    .footer {
+      margin-top: 25px;
+      font-size: 13px;
+      padding-bottom: 15px;
+      word-break: break-word;
+    }
+    .footer a {
+      text-decoration: none;
+      color: #000;
+      font-weight: bold;
+      margin: 0 10px 0 0;
+      display: inline-flex;
+      align-items: center;
+    }
+    .footer svg {
+      width: 20px;
+      height: 20px;
+      margin-right: 6px;
+      fill: #000;
+    }
+    @media (max-width: 600px) {
+      body { padding: .4em; }
+      .container { padding: 0 .2em; }
+      h1 { font-size: 15px; }
+      .toolbar, label { max-width: 100%; }
+      .upload-box { padding: 14px; font-size: 14px; }
+      button, select { font-size: 13px; padding: 6px 8px; }
+      .faq { padding: 10px; font-size: 12px; }
+      .footer { font-size: 12px; }
+      label { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>PIXEL SURFACE</h1>
+
+    <label class="upload-box" tabindex="0">
+      Click to upload or drag and drop
+      <input type="file" id="fileInput" accept="image/*">
+    </label>
+
+    <div class="toolbar">
+      <select id="mode">
+        <option>General</option>
+        <option>Pixel</option>
+        <option>Brightness</option>
+      </select>
+      <button id="resetAll" title="Reset All">Reset All</button>
+      <button id="resetPixel" title="Reset Pixel Size">PS</button>
+      <button id="resetBright" title="Reset Brightness">BR</button>
+      <button id="resetContrast" title="Reset Contrast">CT</button>
+      <button id="resetSat" title="Reset Saturation">SN</button>
+      <button id="downloadBtn" title="Download Image">⬇ Download</button>
+    </div>
+
+    <label>
+      Pixel Size 
+      <input id="pixelSize" type="range" min="1" max="20" value="1">
+    </label>
+    <label>
+      Brightness
+      <input id="brightness" type="range" min="-100" max="100" value="0">
+    </label>
+    <label>
+      Contrast
+      <input id="contrast" type="range" min="-100" max="100" value="0">
+    </label>
+    <label>
+      Saturation
+      <input id="saturation" type="range" min="-100" max="100" value="0">
+    </label>
+
+    <div id="preview">
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="faq">
+      <h2>FAQ</h2>
+      <p><b>Q:</b> What is Pixel Surface?<br>
+      <b>A:</b> It’s a simple tool to turn your images into pixel-style art.</p>
+      <p><b>Q:</b> Does it work on mobile?<br>
+      <b>A:</b> Yes, the layout is fully responsive.</p>
+    </div>
+
+    <div class="footer">
+      <a href="https://x.com/rajaslol" target="_blank">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1227">
+          <path d="M714.163 519.284L1160.89 0H1060.89L668.964 450.887L357.328 0H0L468.445 
+          681.821L0 1226.37H100L515.169 747.072L842.672 1226.37H1200L714.137 
+          519.284H714.163ZM567.545 687.828L520.091 619.963L136.727 
+          79.597H306.909L601.227 493.401L648.681 561.266L1064.54 
+          1165.4H894.358L567.545 687.828Z"/>
+        </svg>
+        @rajaslol
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let img = null;
+    let pixelSize = 1, brightness = 0, contrast = 0, saturation = 0;
+
+    function setImage(imgSrc) {
+      img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        draw();
+      };
+      img.src = imgSrc;
+    }
+
+    function draw() {
+      if (!img) return;
+      ctx.save();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.filter = `brightness(${100 + brightness}%) contrast(${100 + contrast}%) saturate(${100 + saturation}%)`;
+      ctx.imageSmoothingEnabled = pixelSize <= 1;
+      if (pixelSize > 1) {
+        const w = Math.max(1, Math.floor(canvas.width / pixelSize));
+        const h = Math.max(1, Math.floor(canvas.height / pixelSize));
+        ctx.drawImage(img, 0, 0, w, h);
+        ctx.drawImage(canvas, 0, 0, w, h, 0, 0, canvas.width, canvas.height);
+      } else {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      }
+      ctx.restore();
+    }
+
+    // File Input
+    document.getElementById("fileInput").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (file) setImage(URL.createObjectURL(file));
+    });
+
+    // Drag & Drop
+    document.querySelector(".upload-box").addEventListener("dragover", e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "copy";
+    });
+    document.querySelector(".upload-box").addEventListener("drop", e => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (file) setImage(URL.createObjectURL(file));
+    });
+
+    // Sliders
+    document.getElementById("pixelSize").oninput = e => { pixelSize = +e.target.value; draw(); };
+    document.getElementById("brightness").oninput = e => { brightness = +e.target.value; draw(); };
+    document.getElementById("contrast").oninput = e => { contrast = +e.target.value; draw(); };
+    document.getElementById("saturation").oninput = e => { saturation = +e.target.value; draw(); };
+
+    // Reset buttons
+    document.getElementById("resetAll").onclick = () => {
+      pixelSize = 1; brightness = 0; contrast = 0; saturation = 0;
+      document.getElementById("pixelSize").value = 1;
+      document.getElementById("brightness").value = 0;
+      document.getElementById("contrast").value = 0;
+      document.getElementById("saturation").value = 0;
+      draw();
+    };
+    document.getElementById("resetPixel").onclick = () => { pixelSize = 1; document.getElementById("pixelSize").value = 1; draw(); };
+    document.getElementById("resetBright").onclick = () => { brightness = 0; document.getElementById("brightness").value = 0; draw(); };
+    document.getElementById("resetContrast").onclick = () => { contrast = 0; document.getElementById("contrast").value = 0; draw(); };
+    document.getElementById("resetSat").onclick = () => { saturation = 0; document.getElementById("saturation").value = 0; draw(); };
+
+    // Download button
+    document.getElementById("downloadBtn").onclick = () => {
+      if (!img) return;
+      const link = document.createElement("a");
+      link.download = "pixel-surface.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    };
+
+    // Accessibility
+    document.querySelector(".upload-box").addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") {
+        document.getElementById("fileInput").click();
+      }
+    });
+  </script>
+</body>
+</html>
+<!-- partial -->
+  
+</body>
+</html>
