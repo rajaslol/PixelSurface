@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>PixelSurface V2</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pixel Surface V1</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fafafa;
+      font-family: monospace, sans-serif;
+      text-align: center;
+      color: #111;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 1em;
+    }
+    h1 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 22px;
+      margin: 20px 0 15px 0;
+    }
+    .upload-box {
+      border: 2px dashed #000;
+      padding: 30px;
+      margin-bottom: 20px;
+      background: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      max-width: 350px;
+      margin-left: auto;
+      margin-right: auto;
+      transition: background 0.2s;
+    }
+    .upload-box:hover,
+    .upload-box:focus-within {
+      background: #f1f1f1;
+    }
+    input[type="file"] { display: none; }
+
+    .toolbar {
+      margin-bottom: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5em;
+    }
+    select, button {
+      font-family: monospace;
+      font-size: 14px;
+      background: #eaeaea;
+      border: 2px solid #000;
+      padding: 8px 14px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 #000;
+      border-radius: 2px;
+      transition: transform 0.1s;
+    }
+    button:active, select:active {
+      transform: translate(2px,2px);
+      box-shadow: none;
+    }
+
+    label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 8px auto;
+      max-width: 370px;
+    }
+    input[type=range] {
+      flex: 1;
+      margin: 0 8px;
+      accent-color: #000;
+    }
+    .val {
+      min-width: 30px;
+      text-align: right;
+    }
+
+    #preview {
+      margin-top: 20px;
+      border: 2px solid #000;
+      background: #fff;
+      display: inline-block;
+      padding: 6px;
+    }
+    canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .faq, .about {
+      margin-top: 35px;
+      padding: 18px;
+      border: 2px solid #000;
+      border-radius: 3px;
+      background: #fff;
+      text-align: left;
+      max-width: 600px;
+      font-size: 14px;
+      line-height: 1.7;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .faq h2, .about h2 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 16px;
+      margin: 0 0 12px 0;
+    }
+    .faq p, .about p {
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+
+    .footer {
+      margin-top: 20px;
+      padding: 10px;
+      background: #000;
+      color: #aaa;
+      font-size: 11px;
+    }
+    .footer a {
+      color: #aaa;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    .footer a:hover {
+      color: #fff;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 16px; }
+      .toolbar { gap: 0.3em; }
+      button, select { font-size: 12px; padding: 6px 8px; }
+      .faq, .about { font-size: 12px; padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>PIXEL SURFACE</h1>
+
+    <label class="upload-box" tabindex="0">
+      Click to upload or drag and drop
+      <input type="file" id="fileInput" accept="image/*">
+    </label>
+
+    <div class="toolbar">
+      <select id="mode">
+        <option>General</option>
+        <option>Pixel</option>
+        <option>Brightness</option>
+      </select>
+      <button id="resetAll">Reset All</button>
+      <button id="resetPixel">PS</button>
+      <button id="resetBright">BR</button>
+      <button id="resetContrast">CT</button>
+      <button id="resetSat">SN</button>
+      <button id="downloadBtn">⬇ Download</button>
+    </div>
+
+    <label>
+      Pixel Size
+      <input id="pixelSize" type="range" min="1" max="20" value="1">
+      <span id="pixelSizeVal" class="val">1</span>
+    </label>
+    <label>
+      Brightness
+      <input id="brightness" type="range" min="-100" max="100" value="0">
+      <span id="brightnessVal" class="val">0</span>
+    </label>
+    <label>
+      Contrast
+      <input id="contrast" type="range" min="-100" max="100" value="0">
+      <span id="contrastVal" class="val">0</span>
+    </label>
+    <label>
+      Saturation
+      <input id="saturation" type="range" min="-100" max="100" value="0">
+      <span id="saturationVal" class="val">0</span>
+    </label>
+
+    <div id="preview">
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <!-- Extended FAQ -->
+    <div class="faq">
+      <h2>FAQ</h2>
+      <p><b>Q:</b> What is Pixel Surface?<br>
+      <b>A:</b> Pixel Surface is a minimalist online tool that converts your images into pixel-art style with adjustable filters.</p>
+
+      <p><b>Q:</b> Does it work on mobile?<br>
+      <b>A:</b> Yes, the design is fully responsive and works on phones and tablets.</p>
+
+      <p><b>Q:</b> Do I need to install anything?<br>
+      <b>A:</b> No installation required — everything runs directly in your browser.</p>
+
+      <p><b>Q:</b> Can I save my edited images?<br>
+      <b>A:</b> Yes, use the “⬇ Download” button to save your pixel-styled image as PNG.</p>
+
+      <p><b>Q:</b> Are my images stored online?<br>
+      <b>A:</b> No, all processing happens locally in your browser. We do not upload or store your files.</p>
+    </div>
+
+    <!-- About Us Section -->
+    <div class="about">
+      <h2>About Us</h2>
+      <p>Pixel Surface was built for creators, developers, and pixel-art lovers who want a clean, easy tool to transform their images into retro-inspired styles. Our mission is to keep things fast, free, and user-friendly.</p>
+      <p>Join our community on <a href="https://discord.gg/7UmG8q5NJZ" target="_blank">Discord</a> or follow updates on <a href="https://x.com/rajaslol" target="_blank">X</a>.</p>
+    </div>
+  </div>
+
+  <!-- Minimal Footer -->
+  <div class="footer">
+    © 2025 Pixel Surface · Made with ❤️ by Rajas · 
+    <a href="https://x.com/rajaslol" target="_blank">X</a> · 
+    <a href="https://discord.gg/7UmG8q5NJZ" target="_blank">Discord</a>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const fileInput = document.getElementById("fileInput");
+
+    let img = new Image();
+
+    const sliders = {
+      pixelSize: document.getElementById("pixelSize"),
+      brightness: document.getElementById("brightness"),
+      contrast: document.getElementById("contrast"),
+      saturation: document.getElementById("saturation")
+    };
+    const values = {
+      pixelSize: document.getElementById("pixelSizeVal"),
+      brightness: document.getElementById("brightnessVal"),
+      contrast: document.getElementById("contrastVal"),
+      saturation: document.getElementById("saturationVal")
+    };
+
+    function setImage(src) {
+      img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        draw();
+      };
+      img.src = src;
+    }
+
+    function draw() {
+      if (!img.src) return;
+
+      const pixelSize = parseInt(sliders.pixelSize.value);
+      const brightness = parseInt(sliders.brightness.value);
+      const contrast = parseInt(sliders.contrast.value);
+      const saturation = parseInt(sliders.saturation.value);
+
+      const tempCanvas = document.createElement("canvas");
+      const tctx = tempCanvas.getContext("2d");
+
+      tempCanvas.width = Math.max(1, Math.floor(img.width / pixelSize));
+      tempCanvas.height = Math.max(1, Math.floor(img.height / pixelSize));
+
+      tctx.drawImage(img, 0, 0, tempCanvas.width, tempCanvas.height);
+
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.imageSmoothingEnabled = false;
+      ctx.filter = `
+        brightness(${100 + brightness}%)
+        contrast(${100 + contrast}%)
+        saturate(${100 + saturation}%)
+      `;
+      ctx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, canvas.width, canvas.height);
+    }
+
+    // Upload
+    fileInput.addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (file) setImage(URL.createObjectURL(file));
+    });
+
+    // Drag & drop
+    const uploadBox = document.querySelector(".upload-box");
+    uploadBox.addEventListener("dragover", e => {
+      e.preventDefault();
+    });
+    uploadBox.addEventListener("drop", e => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (file) setImage(URL.createObjectURL(file));
+    });
+
+    // Sliders
+    Object.keys(sliders).forEach(key => {
+      sliders[key].addEventListener("input", () => {
+        values[key].textContent = sliders[key].value;
+        draw();
+      });
+    });
+
+    // Reset
+    document.getElementById("resetAll").onclick = () => {
+      sliders.pixelSize.value = 1;
+      sliders.brightness.value = 0;
+      sliders.contrast.value = 0;
+      sliders.saturation.value = 0;
+      Object.keys(sliders).forEach(k => values[k].textContent = sliders[k].value);
+      draw();
+    };
+    document.getElementById("resetPixel").onclick = () => { sliders.pixelSize.value = 1; values.pixelSize.textContent = 1; draw(); };
+    document.getElementById("resetBright").onclick = () => { sliders.brightness.value = 0; values.brightness.textContent = 0; draw(); };
+    document.getElementById("resetContrast").onclick = () => { sliders.contrast.value = 0; values.contrast.textContent = 0; draw(); };
+    document.getElementById("resetSat").onclick = () => { sliders.saturation.value = 0; values.saturation.textContent = 0; draw(); };
+
+    // Download
+    document.getElementById("downloadBtn").onclick = () => {
+      if (!img.src) return;
+      const link = document.createElement("a");
+      link.download = "pixel_surface.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    };
+
+    // Keyboard trigger for upload
+    uploadBox.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") fileInput.click();
+    });
+  </script>
+</body>
+</html>
+<!-- partial -->
+  
+</body>
+</html>
